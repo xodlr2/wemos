@@ -2,9 +2,9 @@
 #include <time.h>
 
 // const char* ssid     = "Hello_IoT"; // Server
-const char* ssid     = "athena-2F"; // Client
-const char* password = "a7162008";
-int timezone = 3;
+const char* ssid     = "U+Net3B0B";   //"athena-2F"; // Client
+const char* password = "6000005399";  // "a7162008";
+int timezone = 9;
 int dst = 0;
 
 WiFiServer server(80); //Initialize the server on Port 80
