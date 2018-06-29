@@ -1,9 +1,12 @@
 #include <ESP8266WiFi.h>
- 
+#include <time.h>
+
 // const char* ssid     = "Hello_IoT"; // Server
 const char* ssid     = "athena-2F"; // Client
 const char* password = "a7162008";
- 
+int timezone = 3;
+int dst = 0;
+
 WiFiServer server(80); //Initialize the server on Port 80
 
 int LED4 = 2;    // Use D4
@@ -46,6 +49,12 @@ void setup() {
 //  pinMode(LED3, OUTPUT);     // Initialize the LED pin as an output
   pinMode(LED4, OUTPUT);     // Initialize the LED pin as an output
   
+  configTime(timezone * 3600, dst * 0, "pool.ntp.org", "time.nist.gov");
+  Serial.println("\nWaiting for time");
+  while (!time(nullptr)) {
+    Serial.print(".");
+    delay(1000);
+  }
 }
 
 void loop() {
@@ -74,16 +83,24 @@ void loop() {
   String s = "HTTP/1.1 200 OK\r\n";
   s += "Content-Type: text/html\r\n\r\n";
   s += "<!DOCTYPE HTML>\r\n<html>\r\n";
-  s += "<br><input type=\"button\" name=\"b1\" value=\"Turn LED ON\" onclick=\"location.href='/ON'\">";
-  s += "<br><br><br>";
-  s += "<input type=\"button\" name=\"b1\" value=\"Turn LED OFF\" onclick=\"location.href='/OFF'\">";
+  s += "<br>";
+  s += "<input type=\"button\" button style=\"height:200px;width:200px\" ";
+  s += "name=\"b1\" value=\"Turn LED ON\" onclick=\"location.href='/ON'\">";
+  s += "&nbsp;&nbsp;&nbsp;";
+  s += "<input type=\"button\" button style=\"height:200px;width:200px\" ";
+  s += "name=\"b1\" value=\"Turn LED OFF\" onclick=\"location.href='/OFF'\">";
+
+//  s += "<br><br><br>";
+//  s += "<input type=\"button\" name=\"b1\" value=\"Turn LED OFF\" onclick=\"location.href='/OFF'\">";
   s += "</html>\n";
   
   client.flush(); //clear previous info in the stream
   client.print(s); // Send the response to the client
   delay(1);
   Serial.println("Client disonnected"); //Looking under the hood
-  
+
+  time_t now = time(nullptr);
+  Serial.println(ctime(&now));
 //  digitalWrite(LED4, LOW);   // Turn the LED
 //  digitalWrite(LED3, HIGH);   // Turn the LED
 //  delay(1000);    // Wait for a seconds
