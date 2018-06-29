@@ -1,6 +1,7 @@
 #include <ESP8266WiFi.h>
  
-const char* ssid     = "Hello_IoT"; // "athena-2F";
+// const char* ssid     = "Hello_IoT"; // Server
+const char* ssid     = "athena-2F"; // Client
 const char* password = "a7162008";
  
 WiFiServer server(80); //Initialize the server on Port 80
@@ -10,16 +11,38 @@ int LED4 = 2;    // Use D4
 
 void setup() {
   // put your setup code here, to run once:
-  WiFi.mode(WIFI_AP); //Our ESP8266-12E is an AccessPoint 
-  WiFi.softAP(ssid, password); // Provide the (SSID, password); . 
-  server.begin(); // Start the HTTP Server
-    
+
   Serial.begin(115200); //Start communication between the ESP8266-12E and the monitor window
+  
+  /* Server Start
+  WiFi.mode(WIFI_AP); //Our ESP8266-12E is an AccessPoint 
+  WiFi.softAP(ssid, password); // Provide the (SSID, password); 
+  Server end */
+
+  /* Client Start */
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("");
+  Serial.println("WiFi connected");
+  /* Client end */ 
+  server.begin(); // Start the HTTP Server
+  Serial.println("Server started");
+  
+  /* Server Start
   IPAddress HTTPS_ServerIP= WiFi.softAPIP(); // Obtain the IP of the Server 
+
   Serial.println(" ");
   Serial.print("Server IP is: "); // Print the IP to the monitor window 
   Serial.println(HTTPS_ServerIP);
+  Server end */
   
+  /* Client Start */
+  Serial.println(WiFi.localIP());
+  /* Client end */ 
 //  pinMode(LED3, OUTPUT);     // Initialize the LED pin as an output
   pinMode(LED4, OUTPUT);     // Initialize the LED pin as an output
   
